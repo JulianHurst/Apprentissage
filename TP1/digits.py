@@ -29,7 +29,7 @@ for k in range(1,30):
         Y_train=[Y[i] for i in learn]
 
         try:
-            clf.fit(X_train[:1000],Y_train[:1000])
+            clf.fit(X_train[:100],Y_train[:100])
         except ValueError as e:
             print "Error! "+str(e)
             print np.array(X_train).shape
@@ -49,7 +49,7 @@ X_train,X_test,Y_train,Y_test=\
 train_test_split(X,Y,test_size=0.3,random_state=random.seed())
 
 clf.fit(X_train,Y_train)
-print clf.score(X_test,Y_test)
+print 1-clf.score(X_test,Y_test)
 
 num=0
 pl.gray()
