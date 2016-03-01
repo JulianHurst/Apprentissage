@@ -34,7 +34,7 @@ def perceptron(data):
                         else:
                             w[j]-=e[0][j]
                 ps=0    
-            except Exception:   # si la taille des données est de 1
+            except Exception: 
                 sv=True
                 ps+=we*e[0]
                 if ps<0:
@@ -59,8 +59,6 @@ def multiperceptron(data,m):
     w=[] 
     wl=[]
     argm=[]
-    we=0
-    sv=False
     for _ in range(m):        
         for _ in range(len(data[0][0])):
             w.append(0)
@@ -80,12 +78,8 @@ def multiperceptron(data,m):
                         wl[amax][j]-=e[0][j]
             ps=0
             argm=[]
-    if sv:
-        print "we : ",we
-        return we
-    else:
-        print "wl : ",wl
-        return wl
+    print "wl : ",wl
+    return wl
 
 #Géneration de données pour 2 classes
 def genererDonnees(n):
@@ -130,7 +124,4 @@ for i in range(len(X)):
     data.append(((X[i]),Y[i]))
 
 multiperceptron(data,3)    
-
-
-
         
