@@ -20,7 +20,6 @@ def perceptron(data):
         w.append(0)
     for _ in range(1000):
         for e in data:
-            print e
             try:
                 for j in range(len(e[0])):
                     ps+=w[j]*e[0][j]            
@@ -113,17 +112,16 @@ def multigenererDonnees(n,m):
         k=random.randint(0,m-1)
         donnees.append(((xr[i],yr[i]),k))
     return donnees
-   
-   
+    
 #2. Jeu de données générée
-
+print "Données générées:"
 data_train=multigenererDonnees(100,3)
 data_test=multigenererDonnees(100,3)
 multiperceptron(data_train,3)
 
 
 #3. Jeu de données Iris
-
+print "Iris:"
 irisData=load_iris()
 X=irisData.data
 Y=irisData.target
