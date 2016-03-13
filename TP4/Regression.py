@@ -11,17 +11,17 @@ from sklearn.datasets import load_iris
 def regression(data):
     X=[]
     Y=[]
-    V=[]   
-    """     
+    V=[]
+    """
     for _ in range(len(data[0][0])):
         V.append(1)
     """
     #print V
     #X.append(V)
-    for e in data:        
+    for e in data:
         el=list(e[0])   #on transforme le tuple en liste
         el=[1]+el       #on ajoute le vecteur 1
-        X.append(el)        
+        X.append(el)
         Y.append(e[1])
     #print X
     XT=np.transpose(X)
@@ -32,7 +32,7 @@ def regression(data):
     w=np.dot(w,Y)
     print w
     return w
-        
+
 irisData=load_iris()
 X=irisData.data
 Y=irisData.target
@@ -41,12 +41,13 @@ Y=irisData.target
 data=[]
 for i in range(len(X)):
     data.append(((X[i]),Y[i]))
-  
+
 regression(data)
 
 dataR=np.loadtxt("dataRegLin2D.txt")
-print dataR[0]
+print "hello ",dataR[0]
 d=np.transpose(dataR)
+print "hi ",d[0]
 
 """
 import matplotlib.pyplot as plt
@@ -68,7 +69,7 @@ pl.show()
 
 for i in range(len(d[0])):
     pl.scatter(d[1][i],d[2][i])
-    
+
 pl.show()
 """
 import matplotlib.pyplot as plt
@@ -84,7 +85,7 @@ w=regression(data2)
 
 for i in range(len(d[0])):
     pl.scatter(d[1][i],d[2][i])
-    plt.quiver(w[0],w[1],w[2])
+    #plt.quiver(w[0],w[1],w[2])
 pl.show()
 
 #import matplotlib.pyplot as plt
@@ -92,7 +93,3 @@ pl.show()
 #fig = plt.figure()
 #ax = fig.add_subplot(111, projection='3d')
 #scatter(dataR[0],dataR[1],)
-
-
- 
-    
