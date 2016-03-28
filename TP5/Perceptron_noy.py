@@ -9,6 +9,16 @@ import numpy as np
 from numpy.linalg import norm
 from sklearn.datasets import load_iris
 import pylab as pl
+import tp5utils as utils
+from sklearn.linear_model import Perceptron
+from sklearn.metrics import mean_squared_error
+from sklearn import svm
+from sklearn import cross_validation
+from sklearn.cross_validation import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+import random
+import os
 
 def noyauGaussien(x1,x2,sigma):
         Y=np.subtract(x1,x2)
@@ -28,7 +38,7 @@ def learnKernelPerceptron(data,target,kernel,h):
     else:
         kp=noyauPolynomial
     for p in range(10):
-        print p
+        #print p
         for i in range(len(data)):
             som=0
             for j in range(len(data)):
@@ -45,7 +55,7 @@ def predictKernelPerceptron(kp,x,data,kernel,h):
     else:
         noy=noyauPolynomial
     for p in range(10):
-        print p
+        #print p
         for i in range(len(data)):
             som=0
             for j in range(len(data)):
@@ -64,19 +74,122 @@ def genererDonnees(n):
         donnees.append(((xr[i],yr[i]),1))
     return donnees
 
+def erreurapp(P,X,Y):
+    ea = 0
+    for i in range(len(X)):
+        if (P[i] <> Y[i]):
+            ea = ea+1
+    return  1.*ea/len(X)
+
 data=genererDonnees(100)
 X=[]
 Y=[]
+
 for x in data:
    X.append(x[0])
    Y.append(x[1])
 
 w=learnKernelPerceptron(X,Y,0,10)
 print w
-
-print noyauGaussien([1,5,4],[0,3,2],2)
-
-print noyauPolynomial([1,2,3],[2,3,4],2)
-
 print predictKernelPerceptron(w,Y,X,1,10)
 print Y
+
+
+"""
+#DONNEES VECTEURS IMAGES
+V_P=utils.chargementVecteursImages('Data/Ailleurs','Data/Mer',1,-1,10)
+
+Data_P=[]
+Target_P=[]
+
+for x in V_P[1]:
+   Data_P.append(x.tolist()[0])
+for x in V_P[2]:
+   Target_P.append(x)
+pixel=True
+"""
+
+#DONNEES VECTEURS HISTOGRAMMES
+V_P=utils.chargementHistogrammesImages('Data/Ailleurs','Data/Mer',1,-1)
+
+Data_P=[]
+Target_P=[]
+
+for x in V_P[1]:
+   Data_P.append(x.tolist())
+for x in V_P[2]:
+   Target_P.append(x)
+pixel=False
+
+X_train,X_test,Y_train,Y_test=\
+train_test_split(Data_P,V_P[2],test_size=0.5,random_state=random.seed())
+
+#KP
+print "KP"
+u=learnKernelPerceptron(X_train,Y_train,0,0.1)
+
+pred=predictKernelPerceptron(u,Y_test,X_test,0,0.1)
+print "Erreur d'apprentissage : ",erreurapp(pred,X_test,Y_test)
+
+print "Erreur réelle : ",mean_squared_error(predictKernelPerceptron(u,Y_test,X_train,0,0.1),Y_test)
+
+print "\n"
+print "P"
+clfp=Perceptron(alpha=0.5)
+clfp.fit(X_train,Y_train)
+print "Erreur d'apprentissage : ",clfp.score(X_test,Y_test)
+scores = cross_validation.cross_val_score(clfp,X_test,Y_test)
+print scores
+print "Erreur réelle : ",scores.mean()
+
+print "\n"
+print "SVC"
+clfs=svm.LinearSVC(C=15)
+clfs.fit(X_train,Y_train)
+print "Erreur d'apprentissage : ",clfs.score(X_test,Y_test)
+pred=clfs.predict(X_test)
+scores = cross_validation.cross_val_score(clfs,X_test,Y_test)
+print scores
+print "Erreur réelle : ",scores.mean()
+
+print "\n"
+print "NEIGHBORS"
+neigh = KNeighborsClassifier(n_neighbors=5)
+neigh.fit(X_train,Y_train)
+print "Erreur d'apprentissage : ",neigh.score(X_test,Y_test)
+scores = cross_validation.cross_val_score(neigh,X_test,Y_test)
+print scores
+print "Erreur réelle : ",scores.mean()
+
+print "\n"
+print "AD"
+ad = DecisionTreeClassifier(max_leaf_nodes=20)
+ad.fit(X_train,Y_train)
+print "Erreur d'apprentissage : ",ad.score(X_test,Y_test)
+scores = cross_validation.cross_val_score(ad,X_test,Y_test)
+print scores
+print "Erreur réelle : ",scores.mean()
+
+print "\n"
+L=[]
+Pix=utils.importVecteursTest("BinTest/tPixel-60.npy")
+for x in Pix:
+    if pixel:
+        L.append(x[:300])
+    else:
+        L.append(x[:768])
+print "Prediction V Pixel : ",clfs.predict(L)
+
+
+
+Hist=utils.importVecteursTest("BinTest/tHisto.npy")
+
+del L[:]
+
+for x in Hist:
+    if pixel:
+        L.append(x[:300])
+    else:
+        L.append(x[:768])
+
+print "Prediction V Histogramme : ",clfs.predict(L)
