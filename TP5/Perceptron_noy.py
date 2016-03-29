@@ -124,6 +124,8 @@ pixel=False
 X_train,X_test,Y_train,Y_test=\
 train_test_split(Data_P,V_P[2],test_size=0.5,random_state=random.seed())
 
+#4.
+
 #KP
 print "KP"
 u=learnKernelPerceptron(X_train,Y_train,0,0.1)
